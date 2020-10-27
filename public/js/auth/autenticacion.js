@@ -57,18 +57,59 @@ class Autenticacion {
   }
 
   authCuentaGoogle () {
-    //$('#avatar').attr('src', result.user.photoURL)
-    //$('.modal').modal('close')
-    //Materialize.toast(`Bienvenido ${result.user.displayName} !! `, 4000)
+
+    // De esta forma podermos autenticar con Google
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+      .then(result => {
+
+        // Ya google hace el signin y nos devuelve el usuario
+        $('#avatar').attr('src', result.user.photoURL)
+        $('.modal').modal('close')
+        Materialize.toast(`Bienvenido ${result.user.displayName} !! `, 4000);
+
+      })
+      .catch(error => {
+        Materialize.toast(`Error al autenticarse con Google ${error}`, 4000);
+      });
+
   }
 
   authCuentaFacebook () {
-    //$('#avatar').attr('src', result.user.photoURL)
-    //$('.modal').modal('close')
-    //Materialize.toast(`Bienvenido ${result.user.displayName} !! `, 4000)
+    
+    // Así podemos inicar sesión con Facebook después de hacer las configuraciones necesarios en la consola de Facebook (Poner la URL de retorno y obtener el app id y secret para ponerlo en firebase)
+    const provider = new firebase.auth.FacebookAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+      .then(result => {
+
+        // Ya facebook hace el signin y nos devuelve el usuario
+        $('#avatar').attr('src', result.user.photoURL)
+        $('.modal').modal('close')
+        Materialize.toast(`Bienvenido ${result.user.displayName} !! `, 4000);
+
+      })
+      .catch(error => {
+        Materialize.toast(`Error al autenticarse con Facebook ${error}`, 4000);
+      });
+
   }
 
   authTwitter () {
-    // TODO: Crear auth con twitter
+    
+    // Así podemos inicar sesión con Facebook después de hacer las configuraciones necesarios en la consola de Facebook (Poner la URL de retorno y obtener el app id y secret para ponerlo en firebase)
+    const provider = new firebase.auth.TwitterAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+      .then(result => {
+
+        // Ya twitter hace el signin y nos devuelve el usuario
+        $('#avatar').attr('src', result.user.photoURL)
+        $('.modal').modal('close')
+        Materialize.toast(`Bienvenido ${result.user.displayName} !! `, 4000);
+
+      })
+      .catch(error => {
+        Materialize.toast(`Error al autenticarse con Twitter ${error}`, 4000);
+      });
+
   }
 }
