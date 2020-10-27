@@ -3,6 +3,7 @@ $(() => {
     //$("#authFB").click(() => );
 
     $("#btnRegistroEmail").click(() => {
+
         const nombres = $('#nombreContactoReg').val();
         const email = $('#emailContactoReg').val();
         const password = $('#passwordReg').val();
@@ -13,9 +14,13 @@ $(() => {
     });
 
     $("#btnInicioEmail").click(() => {
+
         const email = $('#emailSesion').val();
         const password = $('#passwordSesion').val();
-        // TODO : LLamar auth cuenta con email
+
+        const auth = new Autenticacion();
+        auth.autEmailPass(email, password);
+
     });
 
     //$("#authGoogle").click(() => //AUTH con GOOGLE);

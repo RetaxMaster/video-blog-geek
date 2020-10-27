@@ -1,8 +1,23 @@
 class Autenticacion {
   autEmailPass (email, password) {
-    //$('#avatar').attr('src', 'imagenes/usuario_auth.png')
-    //Materialize.toast(`Bienvenido ${result.user.displayName}`, 5000)
-    //$('.modal').modal('close')
+
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(result => {
+
+        // Validamos que si esté verificado
+        if (result.user.emailVerified) {
+          $('#avatar').attr('src', 'imagenes/usuario_auth.png')
+          Materialize.toast(`Bienvenido ${result.user.displayName}`, 5000);
+        }
+        else {
+          // Hacemos el sign out porque firebase guarda de todas maneras las credenciales en el browser
+          firebase.auth().signOut();
+          Materialize.toast(`Por favor realiza la verificación de la cuenta`, 5000);
+        }
+
+        $('.modal').modal('close')
+
+      });
    
   }
 

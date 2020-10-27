@@ -6,7 +6,6 @@ $(() => {
 
   // Init Firebase nuevamente
   firebase.initializeApp(varConfig);
-  firebase.analytics();
 
   // TODO: Registrar LLave publica de messaging
 
@@ -36,9 +35,16 @@ $(() => {
     $('#modalSesion').modal('open')
   })
 
+  // Hacemos el logout dandole click al avatar
   $('#avatar').click(() => {
-    //$('#avatar').attr('src', 'imagenes/usuario.png')
-    //Materialize.toast(`SignOut correcto`, 4000)
+    firebase.auth().signOut()
+      .then(() => {
+        $('#avatar').attr('src', 'imagenes/usuario.png');
+        Materialize.toast(`SignOut correcto`, 4000);
+      })
+      .catch(error => {
+        Materialize.toast(`Error al realizar el SignOut ${error}`, 4000);
+      });
   })
 
   $('#btnTodoPost').click(() => {
