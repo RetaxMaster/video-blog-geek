@@ -7,12 +7,37 @@ class Autenticacion {
   }
 
   crearCuentaEmailPass (email, password, nombres) {
-    /*Materialize.toast(
-      `Bienvenido ${nombres}, debes realizar el proceso de verificación`,
-      4000
-    )
+    // Retorna una promesa, en la oarte de autenticación solo podemos guardar, email, password, url de la foto y un nombre, si quieres guardar alguna otra información se hace en la base de datos
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then(result => {
 
-    $('.modal').modal('close')*/
+        result.user.updateProfile({
+          displayName: nombres
+        })
+
+        const configuracion = {
+          url: "http://localhost:3000"
+        }
+
+        result.user.sendEmailVerification(configuracion).catch(error => {
+          console.error(error);
+          Materialize.toast(error.message, 4000)
+        });
+
+        firebase.auth().signOut();
+
+        Materialize.toast(
+          `Bienvenido ${nombres}, debes realizar el proceso de verificación`,
+          4000
+        )
+    
+        $('.modal').modal('close')
+
+      })
+      .catch(error => {
+        console.error(error);
+        Materialize.toast(error.message, 4000)
+      });
     
   }
 
