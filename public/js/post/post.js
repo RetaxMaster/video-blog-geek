@@ -1,18 +1,91 @@
 class Post {
+
   constructor () {
-      // TODO inicializar firestore y settings
+
+      // Inicializa firestore, igual podemos pasarle un objeto con settings settings
+      this.db = firebase.firestore();
 
   }
 
   crearPost (uid, emailUser, titulo, descripcion, imagenLink, videoLink) {
+
+    // Inserción de documentos
+    // Si usamos add, firestore general el id del documento, si uso .doc("id_personalizado").set() puedo para mi id personalizado
+    return this.db.collection("posts").add({
+        uid, titulo, descripcion, imagenLink, videoLink,
+        autor: emailUser,
+        fecha: firebase.firestore.FieldValue.serverTimestamp() // <- Obtenemos el timestamp del servidor
+    })
+    .then(refDoc => {
+        console.log(`Id del post => ${refDoc.id}`);
+    })
+    .catch(error => {
+        console.log(`Error creando el post => ${error}`);
+    });
     
   }
 
+  // Los obtendremos en realtime!
   consultarTodosPost () {
+
+    // Agregamos el listener a la colección posts
+    this.db.collection("posts").onSnapshot(querySnapshot => {
+
+        $("#posts").empty();
+
+        if (querySnapshot.empty) {
+            $("#posts").append(this.obtenerTemplatePotVacio());
+        }
+        else {
+            querySnapshot.forEach(post => {
+                
+                let postHtml = this.obtenerPostTemplate(
+                    post.data().autor,
+                    post.data().titulo,
+                    post.data().descripcion,
+                    post.data().videoLink,
+                    post.data().imagenLink,
+                    Utilidad.obtenerFecha(post.data().fecha.toDate())
+                );
+
+                $("#posts").append(postHtml);
+
+            });
+        }
+
+    });
     
   }
 
   consultarPostxUsuario (emailUser) {
+
+    this.db.collection("posts")
+    .where("autor", "==", emailUser) // <- Así se hacen los filtros
+    .onSnapshot(querySnapshot => {
+
+        $("#posts").empty();
+
+        if (querySnapshot.empty) {
+            $("#posts").append(this.obtenerTemplatePotVacio());
+        }
+        else {
+            querySnapshot.forEach(post => {
+                
+                let postHtml = this.obtenerPostTemplate(
+                    post.data().autor,
+                    post.data().titulo,
+                    post.data().descripcion,
+                    post.data().videoLink,
+                    post.data().imagenLink,
+                    Utilidad.obtenerFecha(post.data().fecha.toDate())
+                );
+
+                $("#posts").append(postHtml);
+
+            });
+        }
+
+    });
     
   }
 

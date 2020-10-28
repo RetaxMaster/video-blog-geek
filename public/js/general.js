@@ -15,13 +15,14 @@ $(() => {
 
   // TODO: Recibir las notificaciones cuando el usuario esta background
 
-  // TODO: Listening real time
+  // Listening real time
+  const post = new Post();
+  post.consultarTodosPost();
 
   // Firebase observador del cambio de estado, se ejecuta cada vez que cambia el estado del usuario (login, logout)
   firebase.auth().onAuthStateChanged(user => {
 
     if (user) {
-
       $('#btnInicioSesion').text('Salir');
       if(user.photoURL)
         $('#avatar').attr('src', user.photoURL);
@@ -77,11 +78,23 @@ $(() => {
   })
 
   $('#btnTodoPost').click(() => {
-    $('#tituloPost').text('Posts de la Comunidad')   
+    $('#tituloPost').text('Posts de la Comunidad')
+    post.consultarTodosPost();
   })
 
   $('#btnMisPost').click(() => {
-    //$('#tituloPost').text('Mis Posts')
-    //Materialize.toast(`Debes estar autenticado para ver tus posts`, 4000)    
+
+    const user = firebase.auth().currentUser;
+
+    if (user) {
+
+      post.consultarPostxUsuario(user.email)
+      $('#tituloPost').text('Mis Posts') 
+
+    }
+    else {
+      Materialize.toast(`Debes estar autenticado para ver tus posts`, 4000)   
+    }
+    
   })
 })
