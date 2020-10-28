@@ -29,7 +29,17 @@ class Post {
   consultarTodosPost () {
 
     // Agregamos el listener a la colección posts
-    this.db.collection("posts").onSnapshot(querySnapshot => {
+    /*
+
+    Firestore usa índices (Como el índice de un libro), para ir y tomar el dato directamente sin tener que leer los datos un por uno, para campos individuales, firestore crea un índice automáticamente, y es el que usa cuando hacemos ordenamientos individuales, pero cuando hacemos ordenamientos compuestos, tenemos que crear índices compuestos. Afortunadamente, el error que arroja firestore en la consola del navegador a falta de un índice viene acompañado de un enlace con la sugerencia de cuál índice crear:D!
+
+    Importante: Por cada diferente combinación de wheres, orders, etc. Hay que crear un nuev índice compuesto, incluso si se editan los campos o algo
+    
+    */
+    this.db.collection("posts")
+    .orderBy("fecha", "asc")
+    .orderBy("titulo", "asc")
+    .onSnapshot(querySnapshot => {
 
         $("#posts").empty();
 
@@ -60,6 +70,7 @@ class Post {
   consultarPostxUsuario (emailUser) {
 
     this.db.collection("posts")
+    .orderBy("fecha", "asc")
     .where("autor", "==", emailUser) // <- Así se hacen los filtros
     .onSnapshot(querySnapshot => {
 
