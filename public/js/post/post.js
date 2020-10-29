@@ -100,6 +100,32 @@ class Post {
     
   }
 
+  subirImagenPost(file, uid) {
+      
+    const refStorage = firebase.storage().ref(`imgsPosts/${uid}/${file.name}`); // Referencia de donde queremos guardar la imagen
+    const task = refStorage.put(file);
+
+    // Eventos mientras se sube
+    task.on("state_changed", snapshot => {
+
+        const porcentaje = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+        $(".determinate").attr("style", `width: ${porcentaje}%`);
+
+    }, err => {
+        Materialize.toast(`Error subiendo archivo => ${err.message}`, 4000)
+    }, () => {
+        // Cando acabe
+        task.snapshot.ref.getDownloadURL().then(url => {
+            console.log(url);
+            sessionStorage.setItem("imgNewPost", url)
+        })
+        .catch(err => {
+            Materialize.toast(`Error obteniendo donwloadURL => ${err}`, 4000)
+        });
+    });
+
+  }
+
   obtenerTemplatePostVacio () {
     return `<article class="post">
       <div class="post-titulo">
