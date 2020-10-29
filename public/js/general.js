@@ -27,7 +27,7 @@ $(() => {
       if(user.photoURL)
         $('#avatar').attr('src', user.photoURL);
       else
-        $('#avatar').attr('src', 'imagenes/usuario_auth.png')
+        $('#avatar').attr('src', 'imagenes/usuario_auth.png');
 
     }
     else {
