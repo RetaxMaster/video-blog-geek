@@ -17,7 +17,7 @@ $(() => {
 
   // Registrar LLave publica de messaging
   const messaging = firebase.messaging();
-  messaging.usePublicVapidKey("BIWuvmy6tFPsgyH4pabzlCL-8HEfohTODO5rPpzb1upuLXdt1IqG2clkIStxtomLIRzPF-OenWrIT1mKNvo73BQjvjg");
+  messaging.usePublicVapidKey("BIWuvmy6tFPsgyH4pabzlCL-8HEfoh5rPpzb1upuLXdt1IqG2clkIStxtomLIRzPF-OenWrIT1mKNvo73BQjvjg");
 
   // Solicitar permisos para las notificaciones
   messaging.requestPermission()
@@ -27,9 +27,10 @@ $(() => {
   })
   .then(token => {
 
+    console.log("Token: ", token);
     const db = firebase.firestore();
     
-    db.collection("token").doc(token).set({ token })
+    db.collection("tokens").doc(token).set({ token })
     .catch(error => {
       console.log(`Error al insertar el token en la base de datos ${error}`);
     });
@@ -44,7 +45,7 @@ $(() => {
 
       const db = firebase.firestore();
     
-      db.collection("token").doc(token).set({ token })
+      db.collection("tokens").doc(token).set({ token })
       .catch(error => {
         console.log(`Error al insertar el token en la base de datos ${error}`);
       });
