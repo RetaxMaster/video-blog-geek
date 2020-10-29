@@ -2,18 +2,60 @@ $(() => {
   $('.tooltipped').tooltip({ delay: 50 })
   $('.modal').modal()
 
-  // TODO: Adicionar el service worker
+  // Adicionar el service worker
+  navigator.serviceWorker.register("notificaciones-sw.js")
+  .then(registro => {
+    console.log("Service worker registrado");
+    firebase.messaging().useServiceWorker(registro);
+  })
+  .catch(error => {
+    console.error(`Error al registrar el service worker ${error}`);
+  });
 
   // Init Firebase nuevamente
   firebase.initializeApp(varConfig);
 
-  // TODO: Registrar LLave publica de messaging
+  // Registrar LLave publica de messaging
+  const messaging = firebase.messaging();
+  messaging.usePublicVapidKey("BIWuvmy6tFPsgyH4pabzlCL-8HEfohTODO5rPpzb1upuLXdt1IqG2clkIStxtomLIRzPF-OenWrIT1mKNvo73BQjvjg");
 
-  // TODO: Solicitar permisos para las notificaciones
+  // Solicitar permisos para las notificaciones
+  messaging.requestPermission()
+  .then(() => {
+    console.log("Si dio permiso");
+    return messaging.getToken();
+  })
+  .then(token => {
 
-  // TODO: Recibir las notificaciones cuando el usuario esta foreground
+    const db = firebase.firestore();
+    
+    db.collection("token").doc(token).set({ token })
+    .catch(error => {
+      console.log(`Error al insertar el token en la base de datos ${error}`);
+    });
 
-  // TODO: Recibir las notificaciones cuando el usuario esta background
+  });
+
+  // Obtener el token cuando se refresca
+  messaging.onTokenRefresh(() => {
+    messaging.getToken().then(token => {
+
+      console.log("token se ha renovado");
+
+      const db = firebase.firestore();
+    
+      db.collection("token").doc(token).set({ token })
+      .catch(error => {
+        console.log(`Error al insertar el token en la base de datos ${error}`);
+      });
+
+    });
+  });
+
+  // Recibir las notificaciones cuando el usuario esta foreground (Cuando el usuario se encuentra en la aplicación)
+  messaging.onMessage(payload => {
+    Materialize.toast(`Ya tenemos un nuevo post. Revísalo, se llama ${payload.data.titulo}`, 6000);
+  });
 
   // Listening real time
   const post = new Post();
